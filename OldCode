@@ -1,0 +1,83 @@
+import pygame
+
+pygame.init()
+
+screen = pygame.display.set_mode((670,670))
+pygame.display.set_caption("Chess Board")
+screen.fill((0,0,0))
+board = [['bR','bN','bB','bQ','bK','bB','bN','bR'],
+         ['bp','bp','bp','bp','bp','bp','bp','bp'],
+         ['--','--','--','--','--','--','--','--'],
+         ['--','--','--','--','--','--','--','--'],
+         ['--','--','--','--','--','--','--','--'],
+         ['--','--','--','--','--','--','--','--'],
+         ['wp','wp','wp','wp','wp','wp','wp','wp'],
+         ['bR','bN','bB','bQ','bK','bB','bN','bR'],
+         ]
+loadingscreeen = pygame.transform.scale(pygame.image.load('loadingscreen.jpg'),(700,700))
+font = pygame.font.Font("freesansbold.ttf", 40)
+font1 = pygame.font.Font("freesansbold.ttf", 20)
+IMAGES = {}
+def drawPieces():
+    pieces = ['wp','wR','wN','wB','wK','wQ','bp','bN',"bR",'bB','bK','bQ']
+    for piece in pieces:
+       IMAGES[piece] =pygame.transform.scale(pygame.image.load(piece +'.png'), (80,80))
+    for r in range (8):
+        for c in range (8):
+            piece = board[r][c]
+            if piece != '--':
+                screen.blit(IMAGES[piece], pygame.Rect(c*80,r*80, 80, 80))
+
+def chessboard():
+    run = True
+    while run:
+        y = 0
+        for column in range (8):
+            x = 0
+            for row in range(8):
+                if (row + column) % 2 == 0:
+                    board[column][row] = pygame.draw.rect(screen, (133, 94, 66), (x, y, 80,80))
+                    x += 80
+                else:
+                    board[column][row] = pygame.draw.rect(screen, (255, 255, 255), (x, y,80,80))
+                    x += 80
+            y+=80
+        x = 30
+        label = ['A','B', "C", "D", "E", "F", "G", "H"]
+        y = 590
+        for row in label:
+            screen.blit(font1.render(row,True,(255,255,255)),(x,650))
+            x+=80
+        for col in range (1,9):
+            screen.blit(font1.render(str(col), True, (255, 255, 255)), (650, y))
+            y-=80
+        drawPieces()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        pygame.display.update()
+
+def welcome():
+    run = True
+    while run:
+        screen.fill((0, 0, 0))
+        screen.blit(loadingscreeen, (0, 0))
+        start = pygame.draw.rect(screen, (255, 255, 255), (240, 250, 150, 90), 5)
+        text = font.render("PLAY", True, (255, 255, 255))
+        screen.blit(text, (260, 275))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                if (start.collidepoint((pos))):
+                    return 0
+        pygame.display.update()
+
+welcome()
+screen.fill((0,0,0))
+chessboard()
+
+
+
+pygame.quit()
